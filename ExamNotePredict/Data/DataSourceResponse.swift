@@ -9,5 +9,5 @@ import Foundation
 
 
 class DataSourceResponse:Codable{
-    var Result:Double?
+    var result:String?
 }

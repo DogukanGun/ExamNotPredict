@@ -9,18 +9,26 @@ import Foundation
 import Alamofire
 
 class DataSourceInteractor:PresenterToInteractorDataSourceProtocol{
+   
     var presenter: InteractorToPresenterDataSourceProtocol?
     
-    func predict(datasourceModelList:[DataSourceModel]) {
+    func logout() {
+        Session.loggedIn = false
+        presenter?.getResult(result: true)
+    }
+    
+    func predict(datasourceModelList:[DataSourceItem]) {
         var requestList = datasourceModelList.reduce(into: [String: Any]()) {
-            $0[$1.key] = $1.value
+            $0[$1.name!] = $1.value
         }
+        let headers: HTTPHeaders = ["Content-Type":"application/json"]
         AF.request("https://dwapi22.herokuapp.com/predict", method: .post, parameters: requestList,
-                   encoding: JSONEncoding.default)
+                   encoding: JSONEncoding.default,headers: headers)
             .responseDecodable(of: DataSourceResponse.self){ response in
                 do{
+                    print(response.request!.httpBody!)
                     if let response = response.value{
-                        self.presenter?.getResult(point: response.Result ?? 0.0)
+                        self.presenter?.getResult(point: Double(response.result ?? "0.0") ?? 0.0)
                     }else{
                         self.presenter?.getResult(point:  0.0)
                     }

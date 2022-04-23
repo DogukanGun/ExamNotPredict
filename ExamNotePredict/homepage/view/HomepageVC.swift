@@ -7,9 +7,10 @@
 
 import Foundation
 import UIKit
+let appDelegate = UIApplication.shared.delegate as! AppDelegate
 
 class HomepageVC:UIViewController{
-    
+
     @IBOutlet weak var continueButton: UIButton!
     
     
